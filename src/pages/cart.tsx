@@ -1,16 +1,14 @@
-import React, { useEffect, useState, useRef } from 'react';
 import { loadTossPayments } from '@tosspayments/payment-sdk';
 import { nanoid } from "nanoid";
 import styles from './cart.module.scss';
 
 function Cart() {
-  const clientKey = import.meta.env.VITE_CLIENT_KEY;
   const prdPrice = 250;
   const deliveryFee = 50;
   const totalAmount = prdPrice + deliveryFee;
 
   const payment = () => {
-    loadTossPayments(clientKey).then(tossPayments => {
+    loadTossPayments(`${import.meta.env.VITE_CLIENT_KEY}`).then(tossPayments => {
       tossPayments.requestPayment('카드', {
         amount: totalAmount,
         orderId: nanoid(),
@@ -21,9 +19,9 @@ function Cart() {
       })
           .catch(function (error) {
             if (error.code === 'USER_CANCEL') {
-              // 결제 고객이 결제창을 닫았을 때 에러 처리
+              alert("결제창을 닫았습니다. 다시 시도해주세요")
             } else if (error.code === 'INVALID_CARD_COMPANY') {
-              // 유효하지 않은 카드 코드에 대한 에러 처리
+              alert("잘못된 카드번호입니다. 다시 시도해주세요.")
             }
           })
     })
